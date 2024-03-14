@@ -144,22 +144,39 @@ class XYPlot extends React.Component {
     };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const children = getSeriesChildren(nextProps.children);
-    const nextData = getStackedData(children, nextProps.stackBy);
-    const {scaleMixins} = this.state;
-    const nextScaleMixins = this._getScaleMixins(nextData, nextProps);
-    if (
-      !checkIfMixinsAreEqual(
-        nextScaleMixins,
-        scaleMixins,
-        nextProps.hasTreeStructure
-      )
-    ) {
-      this.setState({
-        scaleMixins: nextScaleMixins,
-        data: nextData
-      });
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   const children = getSeriesChildren(nextProps.children);
+  //   const nextData = getStackedData(children, nextProps.stackBy);
+  //   const {scaleMixins} = this.state;
+  //   const nextScaleMixins = this._getScaleMixins(nextData, nextProps);
+  //   if (
+  //     !checkIfMixinsAreEqual(
+  //       nextScaleMixins,
+  //       scaleMixins,
+  //       nextProps.hasTreeStructure
+  //     )
+  //   ) {
+  //     this.setState({
+  //       scaleMixins: nextScaleMixins,
+  //       data: nextData
+  //     });
+  //   }
+  // }
+  componentDidUpdate(prevProps) {
+    const { children: nextChildren, stackBy: nextStackBy } = this.props;
+    const { children: prevChildren, stackBy: prevStackBy } = prevProps;
+  
+    if (nextChildren !== prevChildren || nextStackBy !== prevStackBy) {
+      const nextData = getStackedData(getSeriesChildren(nextChildren), nextStackBy);
+      const { scaleMixins } = this.state;
+      const nextScaleMixins = this._getScaleMixins(nextData, this.props);
+      
+      if (!checkIfMixinsAreEqual(nextScaleMixins, scaleMixins, this.props.hasTreeStructure)) {
+        this.setState({
+          scaleMixins: nextScaleMixins,
+          data: nextData
+        });
+      }
     }
   }
 

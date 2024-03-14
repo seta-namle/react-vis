@@ -74,10 +74,16 @@ class ArcSeries extends AbstractSeries {
     this.state = {scaleProps};
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({scaleProps: this._getAllScaleProps(nextProps)});
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   this.setState({scaleProps: this._getAllScaleProps(nextProps)});
+  // }
+  componentDidUpdate(prevProps) {
+    if (this.props !== prevProps) {
+      this.setState({
+        scaleProps: this._getAllScaleProps(this.props)
+      });
+    }
   }
-
   /**
    * Get the map of scales from the props.
    * @param {Object} props Props.
